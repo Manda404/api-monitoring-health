@@ -1,0 +1,50 @@
+{
+  "title": "Health API - Monitoring Core",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "RPS (all)",
+      "targets": [{ "expr": "sum(rate(api_requests_total[1m]))", "refId": "A" }],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "4xx rate",
+      "targets": [{ "expr": "sum(rate(api_requests_total{http_status=~\"4..\"}[5m]))", "refId": "A" }],
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "5xx rate",
+      "targets": [{ "expr": "sum(rate(api_requests_total{http_status=~\"5..\"}[5m]))", "refId": "A" }],
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency p95 (s)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(api_request_latency_seconds_bucket[5m])) by (le))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "In-progress requests",
+      "targets": [{ "expr": "sum(api_in_progress_requests)", "refId": "A" }],
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Predictions rate by risk_band",
+      "targets": [{ "expr": "sum by (risk_band) (rate(api_predictions_total[1m]))", "refId": "A" }],
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 }
+    }
+  ]
+}
