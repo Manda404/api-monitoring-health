@@ -12,7 +12,7 @@ Pourquoi ?
 
 from prometheus_client import Counter, Histogram, Gauge
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
 # 1) TRAFIC + ERREURS
 API_REQUESTS_TOTAL = Counter(
@@ -54,5 +54,13 @@ def metrics():
     Pourquoi un endpoint dédié ?
     - Prometheus fonctionne en mode pull.
     - L'application expose son état via /metrics.
+        
+    IMPORTANT:
+        - Prometheus attend du texte brut (text/plain)
+        - PAS du JSON
+        - On doit donc utiliser Response explicitement
     """
-    return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
+    return Response(
+        content=generate_latest(),
+        media_type=CONTENT_TYPE_LATEST
+    )
